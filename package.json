@@ -1,0 +1,38 @@
+{
+  "name": "uabmagic-api",
+  "version": "1.0.0",
+  "description": "A ZEIT Now API for UABMagic.com",
+  "main": "dist/index.js",
+  "scripts": {
+    "postinstall": "tslint -c tslint.json -p tsconfig.json --fix && tsc",
+    "start": "node .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rorpage/uabmagic-api.git"
+  },
+  "keywords": [
+    "disney",
+    "typescript"
+  ],
+  "author": "Robbie Page",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rorpage/uabmagic-api/issues"
+  },
+  "homepage": "https://github.com/rorpage/uabmagic-api#readme",
+  "devDependencies": {
+    "@now/node": "^1.4.1",
+    "@types/cheerio": "^0.22.16",
+    "@types/dialogflow": "^4.0.4",
+    "@types/request": "^2.48.4",
+    "@types/uuid": "^3.4.7",
+    "tslint": "^6.0.0",
+    "typescript": "^3.7.5"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.3",
+    "request": "^2.88.2"
+  }
+}
