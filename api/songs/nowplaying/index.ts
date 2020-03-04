@@ -10,26 +10,28 @@ export default async (nowRequest: NowRequest, nowResponse: NowResponse) => {
 
       const response: any = { playback: {} };
 
-      $(`table tr font`).each((index: number, element: CheerioElement) => {
-        const data = element.firstChild?.data?.trim();
-        if (data !== undefined) {
-          // console.log(`${data} [${index}]`);
-          if (index === 12) response.themeParkAndLand = data;
-          if (index === 13) response.attractionAndSong = data;
-          if (index === 16) response.year = Number(data);
-          if (index === 17) response.composer = data;
+      $('table tr font[color="#FFFFFF"], table tr font[color="#AAAAAA"]').each(
+        (index: number, element: CheerioElement) => {
+          const data = element.firstChild?.data?.trim();
+          if (data !== undefined) {
+            // console.log(`${data} [${index}]`);
+            if (index === 4) response.themeParkAndLand = data;
+            if (index === 5) response.attractionAndSong = data;
+            if (index === 7) response.year = Number(data);
+            if (index === 8) response.composer = data;
 
-          if (index === 18) {
-            const minutes = Number(data.split(':')[0]);
-            const seconds = Number(data.split(':')[1]);
-            response.playback.durationDisplay = data;
-            response.playback.duration = minutes * 60 + seconds;
+            if (index === 9) {
+              const minutes = Number(data.split(':')[0]);
+              const seconds = Number(data.split(':')[1]);
+              response.playback.durationDisplay = data;
+              response.playback.duration = minutes * 60 + seconds;
+            }
+
+            if (index === 11) response.plays = Number(data);
+            if (index === 12) response.requests = Number(data);
           }
-
-          if (index === 20) response.plays = Number(data);
-          if (index === 21) response.requests = Number(data);
         }
-      });
+      );
 
       const imageUrl = $(`img[width="200"]`)[0].attribs.src.trim();
       response.imageUrl = `http://uabmagic.com/UABpages/${imageUrl}`;
