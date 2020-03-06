@@ -10,6 +10,11 @@ export default async (nowRequest: NowRequest, nowResponse: NowResponse) => {
 
       const response: any = { playback: {} };
 
+      $('a').each((index: number, element: CheerioElement) => {
+        if (index === 2)
+          response.id = Number(element.attribs.href.match(/\d+/));
+      });
+
       $('table tr font[color="#FFFFFF"], table tr font[color="#AAAAAA"]').each(
         (index: number, element: CheerioElement) => {
           const data = element.firstChild?.data?.trim();
