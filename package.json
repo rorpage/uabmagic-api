@@ -1,12 +1,12 @@
 {
   "name": "uabmagic-api",
   "version": "1.0.0",
-  "description": "A ZEIT Now API for UABMagic.com",
+  "description": "A Vercel API for UABMagic.com",
   "main": "dist/index.js",
   "scripts": {
-    "postinstall": "tslint -c tslint.json -p tsconfig.json --fix && tsc",
-    "start": "node .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
   },
   "repository": {
     "type": "git",
@@ -24,15 +24,22 @@
   "homepage": "https://github.com/rorpage/uabmagic-api#readme",
   "devDependencies": {
     "@now/node": "^1.4.1",
-    "@types/cheerio": "^0.22.16",
+    "@types/cheerio": "^0.22.24",
     "@types/dialogflow": "^4.0.4",
+    "@types/react": "^17.0.2",
     "@types/request": "^2.48.4",
     "@types/uuid": "^3.4.7",
+    "autoprefixer": "^10.2.4",
+    "postcss": "^8.2.6",
+    "tailwindcss": "^2.0.3",
     "tslint": "^6.0.0",
     "typescript": "^3.7.5"
   },
   "dependencies": {
-    "cheerio": "^1.0.0-rc.3",
+    "cheerio": "^1.0.0-rc.5",
+    "next": "^10.0.7",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
     "request": "^2.88.2"
   }
 }

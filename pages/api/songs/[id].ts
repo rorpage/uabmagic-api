@@ -14,10 +14,9 @@ export default async (nowRequest: NowRequest, nowResponse: NowResponse) => {
 
       $(
         'table tr font[color="#FFFFFF"], table tr font[color="FFFFFF"], table tr font[color="#AAAAAA"]'
-      ).each((index: number, element: CheerioElement) => {
+      ).each((index: number, element: any) => {
         const data = element.firstChild?.data?.trim();
         if (data !== undefined) {
-          // console.log(`${data} [${index}]`);
           if (index === 0) response.themeParkAndLand = data;
           if (index === 1) response.year = Number(data);
           if (index === 2) response.composer = data;
@@ -35,10 +34,9 @@ export default async (nowRequest: NowRequest, nowResponse: NowResponse) => {
         }
       });
 
-      $('a').each((index: number, element: CheerioElement) => {
+      $('a').each((index: number, element: any) => {
         const data = element.firstChild?.data?.trim();
         if (data !== undefined) {
-          // console.log(`${data} [${index}]`);
           if (index === 1) response.attractionAndSong = data;
           if (index === 2) response.comments = Number(data);
           if (index === 3) response.plays = Number(data);
@@ -46,8 +44,19 @@ export default async (nowRequest: NowRequest, nowResponse: NowResponse) => {
         }
       });
 
-      const imageUrl = $(`img[width="200"]`)[0].attribs.src.trim();
-      response.imageUrl = `http://uabmagic.com/UABpages/${imageUrl}`;
+      const firstImage = $(`img[width="200"]`)[0] as any;
+      const imageUrl = encodeURIComponent(firstImage.attribs.src.trim().replace('pictures/', ''));
+      const uabImageUrl = `http://uabmagic.com/UABpages/pictures/${imageUrl}`;
+
+      response.uabImageUrl = uabImageUrl;
+      response.imageUrl = `https://image-converter-five.vercel.app/api/convert?url=${uabImageUrl}`;
+      response.blurredImageUrl = `https://image-converter-five.vercel.app/api/blur?url=${uabImageUrl}`;
+
+      response.images = {
+        uabUrl: response.uabImageUrl,
+        url: response.imageUrl,
+        blurredUrl: response.blurredImageUrl
+      };
 
       nowResponse.json(response);
     }
