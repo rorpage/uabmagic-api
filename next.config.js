@@ -1,7 +1,8 @@
 module.exports = {
   images: {
     domains: [
-      "uabmagic.com"
+      "uabmagic.com",
+      "image-converter-five.vercel.app"
     ]
   }
 };

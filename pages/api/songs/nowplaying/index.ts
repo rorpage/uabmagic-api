@@ -1,7 +1,7 @@
-import { NowRequest, NowResponse } from '@now/node';
+import { VercelRequest, VercelResponse } from '@vercel/node';
 import * as nowPlayingFetcher from '../../../../utilities/now-playing-fetcher';
 
-export default async (nowRequest: NowRequest, nowResponse: NowResponse) => {
+export default async (request: VercelRequest, response: VercelResponse) => {
   const nowPlayingSong = await nowPlayingFetcher.getNowPlayingSong();
-  nowResponse.json(nowPlayingSong);
+  response.json(nowPlayingSong);
 };

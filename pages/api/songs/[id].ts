@@ -1,9 +1,9 @@
 import Cheerio from 'cheerio';
-import { NowRequest, NowResponse } from '@now/node';
+import { VercelRequest, VercelResponse } from '@vercel/node';
 import request from 'request';
 
-export default async (nowRequest: NowRequest, nowResponse: NowResponse) => {
-  const songId = nowRequest.query.id;
+export default async (vercelRequest: VercelRequest, vercelResponse: VercelResponse) => {
+  const songId = vercelRequest.query.id;
 
   request(
     `http://uabmagic.com/UABpages/songinfo.php?songID=${songId}`,
@@ -58,7 +58,7 @@ export default async (nowRequest: NowRequest, nowResponse: NowResponse) => {
         blurredUrl: response.blurredImageUrl
       };
 
-      nowResponse.json(response);
+      vercelResponse.json(response);
     }
   );
 };

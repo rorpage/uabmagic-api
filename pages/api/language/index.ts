@@ -1,7 +1,7 @@
-import { NowRequest, NowResponse } from '@now/node';
+import { VercelRequest, VercelResponse } from '@vercel/node';
 import * as requestProcessor from '../../../utilities/request-processor';
 
-export default async (req: NowRequest, res: NowResponse) => {
+export default async (req: VercelRequest, res: VercelResponse) => {
   const action = req.body.queryResult?.action;
   const parameters = req.body.queryResult?.parameters;
 
