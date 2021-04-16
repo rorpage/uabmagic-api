@@ -4,8 +4,8 @@ import { cleanse } from './string-cleaner';
 import { NowPlayingSong } from '../models/now-playing-song';
 
 function getSongInfoByImage(root: cheerio.Root, image: string): string {
-  const requestorElement = root(`img[src="images/${image}.gif"]`).parent().siblings('td') as any;
-  return cleanse(requestorElement.text());
+  const element = root(`img[src="images/${image}.gif"]`).parent().siblings('td') as any;
+  return cleanse(element.text());
 }
 
 export const getNowPlayingSong = async (): Promise<NowPlayingSong> => {
@@ -36,7 +36,6 @@ export const getNowPlayingSong = async (): Promise<NowPlayingSong> => {
         response.year = Number(getSongInfoByImage($, 'year'));
         response.requestor = getSongInfoByImage($, 'requested-by');
         response.composer = getSongInfoByImage($, 'composer');
-
         response.plays = Number(getSongInfoByImage($, 'num-plays'));
         response.requests = Number(getSongInfoByImage($, 'num-requests'))
 
