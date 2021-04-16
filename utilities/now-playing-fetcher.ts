@@ -3,6 +3,11 @@ import request from 'request';
 import { cleanse } from './string-cleaner';
 import { NowPlayingSong } from '../models/now-playing-song';
 
+function getSongInfoByImage(root: cheerio.Root, image: string): string {
+  const requestorElement = root(`img[src="images/${image}.gif"]`).parent().siblings('td') as any;
+  return cleanse(requestorElement.text());
+}
+
 export const getNowPlayingSong = async (): Promise<NowPlayingSong> => {
   return new Promise<NowPlayingSong>(function (resolve, reject) {
     request(
@@ -26,34 +31,21 @@ export const getNowPlayingSong = async (): Promise<NowPlayingSong> => {
         response.schedule = cleanse(scheduleData.firstChild?.data)
           .replace('Now playing: ', '');
 
-        const requestorElement = $('img[src="images/requested-by.gif"]').parent().siblings('td') as any;
-        response.requestor = cleanse(requestorElement.text());
+        response.themeParkAndLand = getSongInfoByImage($, 'themepark-land');
+        response.attractionAndSong = getSongInfoByImage($, 'attraction-song');
+        response.year = Number(getSongInfoByImage($, 'year'));
+        response.requestor = getSongInfoByImage($, 'requested-by');
+        response.composer = getSongInfoByImage($, 'composer');
 
-        const songInfoOffset = (response.schedule.indexOf('Weekly Top Ten Countdown') !== -1) ? 1 : 0;
+        response.plays = Number(getSongInfoByImage($, 'num-plays'));
+        response.requests = Number(getSongInfoByImage($, 'num-requests'))
 
-        $('table tr font[color="#FFFFFF"], table tr font[color="#AAAAAA"]').each(
-          (index: number, element: any) => {
-            const data = element.firstChild?.data?.trim();
+        const durationText = getSongInfoByImage($, 'duration').split(' ')[0];
+        const minutes = Number(durationText.split(':')[0]);
+        const seconds = Number(durationText.split(':')[1]);
 
-            if (data !== undefined) {
-              if (index === 4) response.themeParkAndLand = cleanse(data);
-              if (index === 5) response.attractionAndSong = cleanse(data);
-              if (index === 7 + songInfoOffset) response.year = Number(data);
-              if (index === 8 + songInfoOffset) response.composer = data;
-
-              if (index === 9 + songInfoOffset) {
-                  const minutes = Number(data.split(':')[0]);
-                  const seconds = Number(data.split(':')[1]);
-
-                  response.playback.durationDisplay = data;
-                  response.playback.duration = minutes * 60 + seconds;
-              }
-
-              if (index === 11) response.plays = Number(data);
-              if (index === 12) response.requests = Number(data);
-            }
-          }
-        );
+        response.playback.durationDisplay = durationText;
+        response.playback.duration = minutes * 60 + seconds;
 
         const firstImage = $(`img[width="200"]`)[0] as any;
         const imageUrl = encodeURIComponent(firstImage.attribs.src.trim().replace('pictures/', ''));
