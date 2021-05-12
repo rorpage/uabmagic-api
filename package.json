@@ -30,7 +30,7 @@
     "@types/request": "^2.48.4",
     "@types/uuid": "^3.4.7",
     "autoprefixer": "^10.2.4",
-    "postcss": "^8.2.6",
+    "postcss": "^8.2.10",
     "tailwindcss": "^2.0.3",
     "tslint": "^6.0.0",
     "typescript": "^3.7.5"
