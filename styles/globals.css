@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@200;300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@100;200;300;400;500;600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,8 +6,9 @@
 
 body,
 html {
-  font-family: 'Inconsolata', sans-serif;
-  height: 100%;
+  font-family: 'Be Vietnam Pro', sans-serif;
+  height: 100vh;
+  overflow: hidden;
 }
 
 .bg-image {
@@ -31,4 +32,12 @@ html {
   position: absolute;
   left: 0;
   top: 0;
+}
+
+.gray {
+  color: #cccccc;
+}
+
+.time-display {
+  margin: 16px;
 }

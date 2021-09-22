@@ -1,5 +1,6 @@
 import React from 'react'
 import Song from './song'
+import * as nowPlayingFetcher from '../utilities/now-playing-fetcher';
 
 class NowPlaying extends React.Component {
   constructor(props) {
@@ -44,6 +45,7 @@ class NowPlaying extends React.Component {
   async updateNextSong() {
     const res = await fetch(`/api/songs/nowplaying`);
     const data = await res.json();
+
     data.nextUpdateIn = data.playback.timeLeft * 1000 + 3000;
 
     this.setState({

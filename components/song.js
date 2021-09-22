@@ -9,20 +9,26 @@ export default function Song({ data }) {
             alt={data.attractionAndSong}
             layout="fill" objectFit="cover" />
           <div id="overlay"></div>
-          <Image className="h-12 w-12" src={data.images.uabUrl}
-            alt={data.attractionAndSong}
-            width='200' height='200' />
-            <div className="max-w-md mx-auto">
-              <div className="relative">
-                <div className="text-xl font-bold text-white">
-                  {data.attractionAndSong}
-                </div>
-                <p className="text-white">{data.themeParkAndLand}</p>
-                { data.elapsedTimeDisplay !== undefined &&
-                  <p className="text-white">{data.elapsedTimeDisplay} of {data.playback.durationDisplay}</p>
-                }
+          <div className="max-w-md mx-auto text-white">
+            <div className="relative">
+              { data.schedule !== undefined &&
+                <div className="text-white m-2 font-light">{data.schedule}</div>
+              }
+              <Image className="h-12 w-12" src={data.images.uabUrl}
+                alt={data.attractionAndSong}
+                width='200' height='200' />
+              <p className="gray uppercase font-light">{data.themeParkAndLand}</p>
+              <div className="text-2xl font-semibold">
+                {data.attractionAndSong}
               </div>
+              { data.requestor !== '' &&
+                <div className="text-white m-2">Requested by {data.requestor}</div>
+              }
+              { data.elapsedTimeDisplay !== undefined &&
+                <p className="time-display">{data.elapsedTimeDisplay} of {data.playback.durationDisplay}</p>
+              }
             </div>
+          </div>
         </div>
       </div>
     </>
