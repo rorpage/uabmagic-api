@@ -1,10 +1,10 @@
-import Cheerio from 'cheerio';
+import * as cheerio from 'cheerio';
 import { cleanse } from './string-cleaner';
 import { NowPlayingSong } from '../models/now-playing-song';
 
 const refreshTime = 15;
 
-function getSongInfoByImage(root: cheerio.Root, image: string): string {
+function getSongInfoByImage(root: any, image: string): string {
   const element = root(`img[src="images/${image}.gif"]`).parent().siblings('td') as any;
   return cleanse(element.text());
 }
@@ -14,7 +14,7 @@ export const getNowPlayingSong = async (): Promise<NowPlayingSong> => {
     fetch(`http://uabmagic.com/UABpages/playing.php`)
       .then(res => res.text())
       .then((body) => {
-        const $ = Cheerio.load(body);
+        const $ = cheerio.load(body);
 
         const response = new NowPlayingSong();
 
@@ -36,7 +36,8 @@ export const getNowPlayingSong = async (): Promise<NowPlayingSong> => {
         response.id = songId;
 
         const scriptTags = $(`script`);
-        const timeLeftString = scriptTags.get(scriptTags.length - 1).children[0].data.match(/-?\d+/g);
+        const scriptTagsElements = scriptTags.get(scriptTags.length - 1) as any;
+        const timeLeftString = scriptTagsElements.firstChild?.data.match(/-?\d+/g);
         const timeLeft = Number(timeLeftString[0]);
 
         const adjustTimeLeft = timeLeft < 0;
@@ -86,7 +87,7 @@ export const getNowPlayingSong = async (): Promise<NowPlayingSong> => {
           .html()
           .split('<br><br>')
           .map((song: string) => {
-            const songHtml = Cheerio.load(song.trim()) as any;
+            const songHtml = cheerio.load(song.trim()) as any;
 
             return cleanse(songHtml.text());
           })
@@ -94,6 +95,6 @@ export const getNowPlayingSong = async (): Promise<NowPlayingSong> => {
 
         return resolve(response);
       }
-    );
+      );
   });
 };

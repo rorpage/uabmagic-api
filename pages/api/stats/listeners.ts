@@ -1,11 +1,11 @@
-import Cheerio from 'cheerio';
+import * as cheerio from 'cheerio';
 import { VercelRequest, VercelResponse } from '@vercel/node';
 
 export default async (vercelRequest: VercelRequest, vercelResponse: VercelResponse) => {
-  fetch(`http://uabmagic.com/UABpages/user_votes_console.php`)
+  await fetch(`http://uabmagic.com/UABpages/user_votes_console.php`)
     .then(res => res.text())
     .then((body) => {
-      const $ = Cheerio.load(body);
+      const $ = cheerio.load(body);
 
       const response: any = { listeners: {} };
 

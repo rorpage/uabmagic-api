@@ -1,4 +1,4 @@
-import Cheerio from 'cheerio';
+import * as cheerio from 'cheerio';
 import { VercelRequest, VercelResponse } from '@vercel/node';
 
 import { buildCookie, getUserIdAndSidFromHeader } from '../../../utilities/authenticator';
@@ -38,22 +38,22 @@ const getPendingRequests = async (cookies: string): Promise<any> => {
         }
       }
     )
-    .then((res: Response) => res.text())
-    .then(async (body: string) => {
-      const $ = Cheerio.load(body);
+      .then((res: Response) => res.text())
+      .then(async (body: string) => {
+        const $ = cheerio.load(body);
 
-      const inputs = $(`input[type="checkbox"]`);
+        const inputs = $(`input[type="checkbox"]`);
 
-      if (inputs.length === 0) return resolve({ results: [] });
+        if (inputs.length === 0) return resolve({ results: [] });
 
-      const results = await buildRequestList(inputs, cookies);
+        const results = await buildRequestList(inputs, cookies);
 
-      return resolve({ results });
-    });
+        return resolve({ results });
+      });
   });
 };
 
-async function buildRequestList(inputs: cheerio.Cheerio, cookies: string) {
+async function buildRequestList(inputs: cheerio.Cheerio<cheerio.Element>, cookies: string) {
   const results: any[] = [];
 
   inputs.each((index: number, element: any) => {
@@ -94,13 +94,13 @@ const deletePendingRequest = async (userId: Number, username: string,
         }
       }
     )
-    .then((res: Response) => res.text())
-    .then(async (body: string) => {
-      const success = body.indexOf('Deleting') !== -1;
+      .then((res: Response) => res.text())
+      .then(async (body: string) => {
+        const success = body.indexOf('Deleting') !== -1;
 
-      const pendingRequests = await getPendingRequests(cookies);
+        const pendingRequests = await getPendingRequests(cookies);
 
-      return resolve({ success, pendingRequests });
-    });
+        return resolve({ success, pendingRequests });
+      });
   });
 };

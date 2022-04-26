@@ -1,4 +1,4 @@
-import Cheerio from 'cheerio';
+import * as cheerio from 'cheerio';
 import { buildCookie } from '../../../utilities/authenticator';
 import { VercelRequest, VercelResponse } from '@vercel/node';
 
@@ -27,20 +27,20 @@ export const request = async (songId: number, cookies: string): Promise<any> => 
         }
       }
     )
-    .then(res => res.text())
-    .then((body) => {
-      const $ = Cheerio.load(body);
-      const requestIDInputValue = $(`input[name="requestID"]`).attr(`value`);
+      .then(res => res.text())
+      .then((body) => {
+        const $ = cheerio.load(body);
+        const requestIDInputValue = $(`input[name="requestID"]`).attr(`value`);
 
-      const requestId = Number(requestIDInputValue);
-      const success = body.indexOf(`requested_icon.gif`) !== -1;
+        const requestId = Number(requestIDInputValue);
+        const success = body.indexOf(`requested_icon.gif`) !== -1;
 
-      const response = {
-        requestId,
-        success
-      };
+        const response = {
+          requestId,
+          success
+        };
 
-      return resolve(response);
-    });
+        return resolve(response);
+      });
   });
 };

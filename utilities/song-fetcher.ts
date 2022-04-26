@@ -1,4 +1,4 @@
-import Cheerio from 'cheerio';
+import * as cheerio from 'cheerio';
 
 export const getSong = async (songId: Number, cookies: string): Promise<any> => {
   return new Promise<any>(function (resolve, reject) {
@@ -10,7 +10,7 @@ export const getSong = async (songId: Number, cookies: string): Promise<any> => 
       })
       .then(res => res.text())
       .then((body) => {
-        const $ = Cheerio.load(body);
+        const $ = cheerio.load(body);
 
         const response: any = { id: Number(songId), playback: {} };
 
@@ -67,6 +67,6 @@ export const getSong = async (songId: Number, cookies: string): Promise<any> => 
 
         return resolve(response);
       }
-    );
+      );
   });
 };
