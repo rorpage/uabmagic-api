@@ -3,5 +3,7 @@ export const cleanse = (input: string): string => {
     .replace(/\s\s+/g, ' ')
     .replace('( ', '(')
     .replace(' )', ')')
+    // Typos
+    .replace('Pavillion', 'Pavilion')
     .trim();
 }
