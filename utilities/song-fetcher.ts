@@ -1,4 +1,5 @@
 import * as cheerio from 'cheerio';
+import { Constants } from "./constants";
 
 export const getSong = async (songId: Number, cookies: string): Promise<any> => {
   return new Promise<any>(function (resolve, reject) {
@@ -53,11 +54,11 @@ export const getSong = async (songId: Number, cookies: string): Promise<any> => 
 
         const firstImage = $(`img[width="200"]`)[0] as any;
         const imageUrl = encodeURIComponent(firstImage.attribs.src.trim().replace('pictures/', ''));
-        const uabImageUrl = `http://uabmagic.com/UABpages/pictures/${imageUrl}`;
+        const uabImageUrl = `${Constants.UAB_IMAGE_URL}/${imageUrl}`;
 
         response.uabImageUrl = uabImageUrl;
-        response.imageUrl = `https://image-converter-five.vercel.app/api/convert?url=${uabImageUrl}`;
-        response.blurredImageUrl = `https://image-converter-five.vercel.app/api/blur?url=${uabImageUrl}`;
+        response.imageUrl = `${Constants.FINAL_IMAGE_URL}${uabImageUrl}`;
+        response.blurredImageUrl = `${Constants.BLURRED_IMAGE_URL}${uabImageUrl}`;
 
         response.images = {
           uabUrl: response.uabImageUrl,

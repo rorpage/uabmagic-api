@@ -1,5 +1,6 @@
 import * as cheerio from 'cheerio';
 import { cleanse } from './string-cleaner';
+import { Constants } from "./constants";
 import { NowPlayingSong } from '../models/now-playing-song';
 
 const refreshTime = 15;
@@ -70,9 +71,9 @@ export const getNowPlayingSong = async (): Promise<NowPlayingSong> => {
         const firstImage = $(`img[width="200"]`)[0] as any;
         const imageUrl = encodeURIComponent(firstImage.attribs.src.trim().replace('pictures/', ''));
 
-        const uabImageUrl = `http://uabmagic.com/UABpages/pictures/${imageUrl}`;
-        const finalImageUrl = `https://image-converter-five.vercel.app/api/convert?url=${uabImageUrl}`;
-        const blurredImageUrl = `https://image-converter-five.vercel.app/api/blur?url=${uabImageUrl}`;
+        const uabImageUrl = `${Constants.UAB_IMAGE_URL}/${imageUrl}`;
+        const finalImageUrl = `${Constants.FINAL_IMAGE_URL}${uabImageUrl}`;
+        const blurredImageUrl = `${Constants.BLURRED_IMAGE_URL}${uabImageUrl}`;
 
         response.images = {
           uabUrl: uabImageUrl,

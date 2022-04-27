@@ -1,4 +1,5 @@
 import * as cheerio from 'cheerio';
+import { Constants } from "../../../utilities/constants";
 import { login } from '../../../utilities/authenticator';
 import { VercelRequest, VercelResponse } from '@vercel/node';
 
@@ -74,9 +75,9 @@ export const search = async (query: string, cookies: string): Promise<any> => {
           if (image) {
             const imageUrl = encodeURIComponent(image.attribs.src.trim().replace(`pictures/`, ``));
 
-            const uabImageUrl = `http://uabmagic.com/UABpages/pictures/${imageUrl}`;
-            const finalImageUrl = `https://image-converter-five.vercel.app/api/convert?url=${uabImageUrl}`;
-            const blurredImageUrl = `https://image-converter-five.vercel.app/api/blur?url=${uabImageUrl}`;
+            const uabImageUrl = `${Constants.UAB_IMAGE_URL}/${imageUrl}`;
+            const finalImageUrl = `${Constants.FINAL_IMAGE_URL}${uabImageUrl}`;
+            const blurredImageUrl = `${Constants.BLURRED_IMAGE_URL}${uabImageUrl}`;
 
             song.images = {
               uabUrl: uabImageUrl,
