@@ -1,9 +1,9 @@
+import { buildCookie } from '../../../utilities/authenticator';
 import * as cheerio from 'cheerio';
-import { Constants } from "../../../utilities/constants";
+import { cleanse } from '../../../utilities/string-cleaner';
+import { Constants } from '../../../utilities/constants';
 
 import { VercelRequest, VercelResponse } from '@vercel/node';
-
-import { buildCookie } from '../../../utilities/authenticator';
 
 export default async (vercelRequest: VercelRequest, vercelResponse: VercelResponse) => {
   if (!vercelRequest.headers.authorization) {
@@ -65,7 +65,8 @@ const getFavorites = async (cookies: string): Promise<any> => {
             .each((index: number, element: any) => {
               if (index === 1) {
                 const correctedImage = $(element).html().replace('\n', '');
-                const image = encodeURIComponent($(correctedImage).attr('src').trim().replace('pictures/', ''));
+                const url = $(correctedImage).attr('src').trim().replace('pictures/', '');
+                const image = encodeURIComponent(cleanse(url));
 
                 const uabImageUrl = `${Constants.UAB_IMAGE_URL}/${image}`;
                 const imageUrl = `${Constants.FINAL_IMAGE_URL}${uabImageUrl}`
@@ -82,8 +83,8 @@ const getFavorites = async (cookies: string): Promise<any> => {
                 const fonts = $(element).find(`font`);
                 const pieces = $(fonts[0]).text().trim().split('\n');
 
-                song.themeParkAndLand = pieces[0].trim();
-                song.attractionAndSong = pieces[3].trim();
+                song.themeParkAndLand = cleanse(pieces[0]);
+                song.attractionAndSong = cleanse(pieces[3]);
               }
 
               if (index === 5) {

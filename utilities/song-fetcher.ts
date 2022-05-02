@@ -1,5 +1,6 @@
 import * as cheerio from 'cheerio';
-import { Constants } from "./constants";
+import { cleanse } from './string-cleaner';
+import { Constants } from './constants';
 
 export const getSong = async (songId: Number, cookies: string): Promise<any> => {
   return new Promise<any>(function (resolve, reject) {
@@ -25,9 +26,9 @@ export const getSong = async (songId: Number, cookies: string): Promise<any> => 
         ).each((index: number, element: any) => {
           const data = element.firstChild?.data?.trim();
           if (data !== undefined) {
-            if (index === 0) response.themeParkAndLand = data;
+            if (index === 0) response.themeParkAndLand = cleanse(data);
             if (index === 1) response.year = Number(data);
-            if (index === 2) response.composer = data;
+            if (index === 2) response.composer = cleanse(data);
 
             if (index === 3) {
               const minutes = Number(data.split(':')[0]);
@@ -45,7 +46,7 @@ export const getSong = async (songId: Number, cookies: string): Promise<any> => 
         $('a').each((index: number, element: any) => {
           const data = element.firstChild?.data?.trim();
           if (data !== undefined) {
-            if (index === 1 + offset) response.attractionAndSong = data;
+            if (index === 1 + offset) response.attractionAndSong = cleanse(data);
             if (index === 2 + offset) response.comments = Number(data);
             if (index === 3 + offset) response.plays = Number(data);
             if (index === 4 + offset) response.requests = Number(data);

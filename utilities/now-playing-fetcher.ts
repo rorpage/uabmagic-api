@@ -1,6 +1,6 @@
 import * as cheerio from 'cheerio';
 import { cleanse } from './string-cleaner';
-import { Constants } from "./constants";
+import { Constants } from './constants';
 import { NowPlayingSong } from '../models/now-playing-song';
 
 const refreshTime = 15;

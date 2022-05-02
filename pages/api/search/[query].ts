@@ -1,5 +1,6 @@
 import * as cheerio from 'cheerio';
-import { Constants } from "../../../utilities/constants";
+import { cleanse } from '../../../utilities/string-cleaner';
+import { Constants } from '../../../utilities/constants';
 import { login } from '../../../utilities/authenticator';
 import { VercelRequest, VercelResponse } from '@vercel/node';
 
@@ -87,10 +88,10 @@ export const search = async (query: string, cookies: string): Promise<any> => {
           }
 
           const themeParkAndLandTd = tds.children().get(2);
-          song.themeParkAndLand = $(themeParkAndLandTd).text().trim();
+          song.themeParkAndLand = cleanse($(themeParkAndLandTd).text());
 
           const attractionAndSongTd = tds.children().get(4);
-          song.attractionAndSong = $(attractionAndSongTd).text().trim();
+          song.attractionAndSong = cleanse($(attractionAndSongTd).text());
 
           const miles = tds.children().get(6);
           song.miles = Number($(miles).text().trim());

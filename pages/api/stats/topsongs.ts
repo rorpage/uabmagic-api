@@ -1,5 +1,6 @@
 import * as cheerio from 'cheerio';
-import { Constants } from "../../../utilities/constants";
+import { cleanse } from '../../../utilities/string-cleaner';
+import { Constants } from '../../../utilities/constants';
 import { VercelRequest, VercelResponse } from '@vercel/node';
 
 export default async (vercelRequest: VercelRequest, vercelResponse: VercelResponse) => {
@@ -67,13 +68,13 @@ export default async (vercelRequest: VercelRequest, vercelResponse: VercelRespon
             if (tdIndex === 2) {
               const tdChildren = $(td).children();
 
-              song.themeParkAndLand = $(tdChildren.get(0)).text().trim();
+              song.themeParkAndLand = cleanse($(tdChildren.get(0)).text());
               song.requests = Number($(tdChildren.get(1)).text().replace('(', '').replace(')', '').trim());
 
               const attractionAndSong = $(tdChildren.get(3));
               const attractionAndSongATag = attractionAndSong.find('a')[0];
 
-              song.attractionAndSong = $(attractionAndSongATag).text().trim();
+              song.attractionAndSong = cleanse($(attractionAndSongATag).text());
 
               const href = $(attractionAndSongATag).attr(`href`);
 

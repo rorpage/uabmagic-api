@@ -1,5 +1,5 @@
 import { Constants } from "./constants";
-import { DialogFlowResponse } from "../models/response/dialogflow/dialogflow-response";
+import { DialogFlowResponse } from '../models/response/dialogflow/dialogflow-response';
 import * as nowPlayingFetcher from '../utilities/now-playing-fetcher';
 
 export const processRequest = async (
