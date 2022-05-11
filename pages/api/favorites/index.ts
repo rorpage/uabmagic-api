@@ -46,6 +46,7 @@ const getFavorites = async (cookies: string): Promise<any> => {
     )
       .then((res: Response) => res.text())
       .then(async (body: string) => {
+
         const $ = cheerio.load(body);
 
         const results: any[] = [];
