@@ -39,10 +39,17 @@ export const getNowPlayingSong = async (): Promise<NowPlayingSong> => {
         const scriptTags = $(`script`);
         const scriptTagsElements = scriptTags.get(scriptTags.length - 1) as any;
         const timeLeftString = scriptTagsElements.firstChild?.data.match(/-?\d+/g);
-        const timeLeft = Number(timeLeftString[0]);
+        const timeLeftNumber = Number(timeLeftString[0]);
 
-        const adjustTimeLeft = timeLeft < 0;
-        response.playback.timeLeft = adjustTimeLeft ? refreshTime : timeLeft;
+        const adjustTimeLeft = timeLeftNumber < 0;
+        const timeLeft = adjustTimeLeft ? refreshTime : timeLeftNumber;
+
+        response.playback.timeLeft = timeLeft;
+
+        const timeLeftMinutes = Math.floor(timeLeft / 60);
+        const timeLeftSeconds = timeLeft - timeLeftMinutes * 60;
+        const timeLeftSecondsDisplay = timeLeftSeconds < 10 ? `0${timeLeftSeconds}` : `${timeLeftSeconds}`;
+        response.playback.timeLeftDisplay = `${timeLeftMinutes}:${timeLeftSecondsDisplay}`;
 
         if (adjustTimeLeft) {
           response.playback.durationDisplay = `0:${refreshTime}`;
