@@ -10,6 +10,14 @@ function getSongInfoByImage(root: any, image: string): string {
   return cleanse(element.text());
 }
 
+function buildTimeDisplayText(time: number): string {
+  const timeMinutes = Math.floor(time / 60);
+  const timeSeconds = time - timeMinutes * 60;
+  const timeSecondsDisplay = timeSeconds < 10 ? `0${timeSeconds}` : `${timeSeconds}`;
+
+  return `${timeMinutes}:${timeSecondsDisplay}`;
+}
+
 export const getNowPlayingSong = async (): Promise<NowPlayingSong> => {
   return new Promise<NowPlayingSong>(function (resolve, reject) {
     fetch(`http://uabmagic.com/UABpages/playing.php`)
@@ -45,23 +53,26 @@ export const getNowPlayingSong = async (): Promise<NowPlayingSong> => {
         const timeLeft = adjustTimeLeft ? refreshTime : timeLeftNumber;
 
         response.playback.timeLeft = timeLeft;
+        response.playback.timeLeftDisplay = buildTimeDisplayText(timeLeft);
 
-        const timeLeftMinutes = Math.floor(timeLeft / 60);
-        const timeLeftSeconds = timeLeft - timeLeftMinutes * 60;
-        const timeLeftSecondsDisplay = timeLeftSeconds < 10 ? `0${timeLeftSeconds}` : `${timeLeftSeconds}`;
-        response.playback.timeLeftDisplay = `${timeLeftMinutes}:${timeLeftSecondsDisplay}`;
+        let duration = refreshTime;
 
         if (adjustTimeLeft) {
           response.playback.durationDisplay = `0:${refreshTime}`;
-          response.playback.duration = refreshTime;
         } else {
           const durationText = getSongInfoByImage($, 'duration').split(' ')[0];
           const minutes = Number(durationText.split(':')[0]);
           const seconds = Number(durationText.split(':')[1]);
 
           response.playback.durationDisplay = durationText;
-          response.playback.duration = minutes * 60 + seconds;
+
+          duration = minutes * 60 + seconds;
         }
+
+        response.playback.duration = duration;
+
+        response.playback.timeElapsed = duration - timeLeft;
+        response.playback.timeElapsedDisplay = buildTimeDisplayText(duration - timeLeft);
 
         const scheduleData = $('font[color="#FFFFFF"] b')[1] as any;
         response.schedule = cleanse(scheduleData.firstChild?.data)
