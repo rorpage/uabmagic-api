@@ -77,7 +77,8 @@ export const getNowPlayingSong = async (): Promise<NowPlayingSong> => {
         const scheduleData = $('font[color="#FFFFFF"] b')[1] as any;
         response.schedule = cleanse(scheduleData.firstChild?.data)
           .replace('Now playing: ', '')
-          .replace('Now Playing: ', '');
+          .replace('Now Playing: ', '')
+          .replace('1 requests', '1 request');
 
         response.themeParkAndLand = getSongInfoByImage($, 'themepark-land');
         response.attractionAndSong = getSongInfoByImage($, 'attraction-song');
