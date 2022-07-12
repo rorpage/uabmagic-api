@@ -1,4 +1,4 @@
-import { buildCookie } from '../../../utilities/authenticator';
+import { buildCookieFromAuthHeader } from '../../../utilities/authenticator';
 import * as cheerio from 'cheerio';
 import { cleanse } from '../../../utilities/string-cleaner';
 import { Constants } from '../../../utilities/constants';
@@ -12,28 +12,33 @@ export default async (vercelRequest: VercelRequest, vercelResponse: VercelRespon
     return;
   }
 
-  const cookie = buildCookie(vercelRequest.headers.authorization);
+  const cookie = buildCookieFromAuthHeader(vercelRequest.headers.authorization);
 
-  if (vercelRequest.method === 'GET') {
-    const requestResponse = await getFavorites(cookie);
-
-    vercelResponse.json(requestResponse);
-  } else if (vercelRequest.method === 'POST') {
-    const { songId } = vercelRequest.body;
-
-    const response = await processFavorite('add', songId, cookie);
-
-    vercelResponse.json(response);
-  } else if (vercelRequest.method === 'DELETE') {
-    const { songId } = vercelRequest.body;
-
-    const response = await processFavorite('delete', songId, cookie);
-
-    vercelResponse.json(response);
-  } else {
-    vercelResponse.status(405).json({ error: 'Invalid method' });
-  }
+  await processFavorites(vercelRequest, vercelResponse, cookie);
 };
+
+export const processFavorites =
+  async (vercelRequest: VercelRequest, vercelResponse: VercelResponse, cookie: string) => {
+    if (vercelRequest.method === 'GET') {
+      const requestResponse = await getFavorites(cookie);
+
+      vercelResponse.json(requestResponse);
+    } else if (vercelRequest.method === 'POST') {
+      const { songId } = vercelRequest.body;
+
+      const response = await processFavorite('add', songId, cookie);
+
+      vercelResponse.json(response);
+    } else if (vercelRequest.method === 'DELETE') {
+      const { songId } = vercelRequest.body;
+
+      const response = await processFavorite('delete', songId, cookie);
+
+      vercelResponse.json(response);
+    } else {
+      vercelResponse.status(405).json({ error: 'Invalid method' });
+    }
+  };
 
 const getFavorites = async (cookies: string): Promise<any> => {
   return new Promise<any>(function (resolve, reject) {

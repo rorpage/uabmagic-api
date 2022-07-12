@@ -8,5 +8,6 @@ export class Constants {
 
   public static readonly BLURRED_IMAGE_URL = 'https://image-converter-five.vercel.app/api/blur?url=';
   public static readonly FINAL_IMAGE_URL = 'https://image-converter-five.vercel.app/api/convert?url=';
-  public static readonly UAB_IMAGE_URL = 'http://uabmagic.com/UABpages/pictures';
+  // public static readonly UAB_IMAGE_URL = 'http://uabmagic.com/UABpages/pictures';
+  public static readonly UAB_IMAGE_URL = 'https://uabmagic.azureedge.net/images';
 }

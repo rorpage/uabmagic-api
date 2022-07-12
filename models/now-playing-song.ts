@@ -8,15 +8,19 @@ export class NowPlayingSong {
   }
 
   id: number;
-  attractionAndSong: string;
-  composer: string;
+  attractionAndSong: string = '';
+  composer: string = '';
   images: Images;
+  isArtistBlock: boolean = false;
+  isUabYourWayShow: boolean = false;
+  isWeeklyCountdown: boolean = false;
   playback: Playback;
   plays: number;
-  requestor: string;
+  requestor: string = '';
   requests: number;
-  schedule: string;
-  themeParkAndLand: string;
+  schedule: string = '';
+  themeParkAndLand: string = '';
+  uabYourWayUser: string = '';
   upNext: string[];
   year: number;
 }

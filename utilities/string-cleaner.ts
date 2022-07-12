@@ -5,5 +5,6 @@ export const cleanse = (input: string): string => {
     .replace(' )', ')')
     // Typos
     .replace('Pavillion', 'Pavilion')
+    .replace('Forcourt', 'Forecourt')
     .trim();
 }

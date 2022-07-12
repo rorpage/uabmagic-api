@@ -1,7 +1,7 @@
 import * as cheerio from 'cheerio';
 import { VercelRequest, VercelResponse } from '@vercel/node';
 
-import { buildCookie, getUserIdAndSidFromHeader } from '../../../utilities/authenticator';
+import { buildCookieFromAuthHeader, getUserIdAndSidFromHeader } from '../../../utilities/authenticator';
 import { getSong } from '../../../utilities/song-fetcher';
 
 export default async (vercelRequest: VercelRequest, vercelResponse: VercelResponse) => {
@@ -11,7 +11,7 @@ export default async (vercelRequest: VercelRequest, vercelResponse: VercelRespon
     return;
   }
 
-  const cookie = buildCookie(vercelRequest.headers.authorization);
+  const cookie = buildCookieFromAuthHeader(vercelRequest.headers.authorization);
 
   if (vercelRequest.method === 'GET') {
     const requestResponse = await getPendingRequests(cookie);

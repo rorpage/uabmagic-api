@@ -1,5 +1,5 @@
 import * as cheerio from 'cheerio';
-import { buildCookie } from '../../../utilities/authenticator';
+import { buildCookieFromAuthHeader } from '../../../utilities/authenticator';
 import { VercelRequest, VercelResponse } from '@vercel/node';
 
 export default async (vercelRequest: VercelRequest, vercelResponse: VercelResponse) => {
@@ -11,7 +11,7 @@ export default async (vercelRequest: VercelRequest, vercelResponse: VercelRespon
 
   const { songId } = vercelRequest.body;
 
-  const cookie = buildCookie(vercelRequest.headers.authorization);
+  const cookie = buildCookieFromAuthHeader(vercelRequest.headers.authorization);
 
   const requestResponse = await request(songId, cookie);
 
@@ -35,9 +35,24 @@ export const request = async (songId: number, cookies: string): Promise<any> => 
         const requestId = Number(requestIDInputValue);
         const success = body.indexOf(`requested_icon.gif`) !== -1;
 
+        let message = '';
+
+        if (!success) {
+          if (body.indexOf(`Track already in queue to be played`) !== -1) {
+            message = 'Track already in queue to be played';
+          } else if (body.indexOf(`Track recently played`) !== -1) {
+            message = 'Track recently played';
+          } else if (body.indexOf(`Requests are disabled`) !== -1) {
+            message = 'Requests are currently disabled'
+          } else {
+            message = 'An unknown error occurred';
+          }
+        }
+
         const response = {
           requestId,
-          success
+          success,
+          message
         };
 
         return resolve(response);

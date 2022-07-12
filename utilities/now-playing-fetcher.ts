@@ -78,12 +78,29 @@ export const getNowPlayingSong = async (): Promise<NowPlayingSong> => {
         response.schedule = cleanse(scheduleData.firstChild?.data)
           .replace('Now playing: ', '')
           .replace('Now Playing: ', '')
-          .replace('1 requests', '1 request');
+          .replace('1 requests', '1 request')
+          .replace(' - - ', ' - ');
+
+        response.isArtistBlock =
+          response.schedule.indexOf("The Artists Block") !== -1;
+
+        response.isWeeklyCountdown =
+          response.schedule.indexOf("Weekly Top Ten Countdown") !== -1;
 
         response.themeParkAndLand = getSongInfoByImage($, 'themepark-land');
         response.attractionAndSong = getSongInfoByImage($, 'attraction-song');
         response.year = Number(getSongInfoByImage($, 'year'));
-        response.requestor = getSongInfoByImage($, 'requested-by');
+
+        const uabOMaticString = 'UAB-O-MATIC ACTIVE: ';
+        const requestor = getSongInfoByImage($, 'requested-by');
+
+        if (requestor.indexOf(uabOMaticString) === -1) {
+          response.requestor = requestor;
+        } else {
+          response.isUabYourWayShow = true;
+          response.uabYourWayUser = requestor.replace(uabOMaticString, '').trim();
+        }
+
         response.composer = getSongInfoByImage($, 'composer');
         response.plays = Number(getSongInfoByImage($, 'num-plays'));
         response.requests = Number(getSongInfoByImage($, 'num-requests'));
