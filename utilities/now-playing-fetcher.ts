@@ -1,13 +1,16 @@
+import axios from 'axios';
 import * as cheerio from 'cheerio';
-import { cleanse } from './string-cleaner';
+import { cleanse, cleanSchedule } from './string-cleaner';
 import { Constants } from './constants';
 import { NowPlayingSong } from '../models/now-playing-song';
+import { buildCookieFromAuthHeader } from '../utilities/authenticator';
 
 const refreshTime = 15;
 
-function getSongInfoByImage(root: any, image: string): string {
+function getSongInfoByImage(root: any, image: string, fixCase = true): string {
   const element = root(`img[src="images/${image}.gif"]`).parent().siblings('td') as any;
-  return cleanse(element.text());
+
+  return cleanse(element.text(), fixCase);
 }
 
 function buildTimeDisplayText(time: number): string {
@@ -18,14 +21,22 @@ function buildTimeDisplayText(time: number): string {
   return `${timeMinutes}:${timeSecondsDisplay}`;
 }
 
-export const getNowPlayingSong = async (): Promise<NowPlayingSong> => {
-  return new Promise<NowPlayingSong>(function (resolve, reject) {
-    fetch(`http://uabmagic.com/UABpages/playing.php`)
-      .then(res => res.text())
-      .then((body) => {
-        const $ = cheerio.load(body);
+export const getNowPlayingSong = async (cookies: string = ''): Promise<NowPlayingSong> => {
+  const headers = cookies.length === 0 ? {}
+    : {
+      headers: {
+        cookie: buildCookieFromAuthHeader(cookies)
+      }
+    };
 
-        const response = new NowPlayingSong();
+  return new Promise<NowPlayingSong>(function (resolve, reject) {
+    axios.get(`http://uabmagic.com/UABpages/playing.php`, headers)
+      // .then(res => res.text())
+      .then((response) => {
+        const $ = cheerio.load(response.data);
+
+        // console.log($.html());
+        const nowPlayingSong = new NowPlayingSong();
 
         let songId = 0;
         try {
@@ -42,7 +53,7 @@ export const getNowPlayingSong = async (): Promise<NowPlayingSong> => {
           console.log(e);
         }
 
-        response.id = songId;
+        nowPlayingSong.id = songId;
 
         const scriptTags = $(`script`);
         const scriptTagsElements = scriptTags.get(scriptTags.length - 1) as any;
@@ -52,58 +63,62 @@ export const getNowPlayingSong = async (): Promise<NowPlayingSong> => {
         const adjustTimeLeft = timeLeftNumber < 0;
         const timeLeft = adjustTimeLeft ? refreshTime : timeLeftNumber;
 
-        response.playback.timeLeft = timeLeft;
-        response.playback.timeLeftDisplay = buildTimeDisplayText(timeLeft);
+        nowPlayingSong.playback.timeLeft = timeLeft;
+        nowPlayingSong.playback.timeLeftDisplay = buildTimeDisplayText(timeLeft);
 
         let duration = refreshTime;
 
         if (adjustTimeLeft) {
-          response.playback.durationDisplay = `0:${refreshTime}`;
+          nowPlayingSong.playback.durationDisplay = `0:${refreshTime}`;
         } else {
           const durationText = getSongInfoByImage($, 'duration').split(' ')[0];
           const minutes = Number(durationText.split(':')[0]);
           const seconds = Number(durationText.split(':')[1]);
 
-          response.playback.durationDisplay = durationText;
+          nowPlayingSong.playback.durationDisplay = durationText;
 
           duration = minutes * 60 + seconds;
         }
 
-        response.playback.duration = duration;
+        nowPlayingSong.playback.duration = duration;
 
-        response.playback.timeElapsed = duration - timeLeft;
-        response.playback.timeElapsedDisplay = buildTimeDisplayText(duration - timeLeft);
+        nowPlayingSong.playback.timeElapsed = duration - timeLeft;
+        nowPlayingSong.playback.timeElapsedDisplay = buildTimeDisplayText(duration - timeLeft);
 
         const scheduleData = $('font[color="#FFFFFF"] b')[1] as any;
-        response.schedule = cleanse(scheduleData.firstChild?.data)
-          .replace('Now playing: ', '')
-          .replace('Now Playing: ', '')
-          .replace('1 requests', '1 request')
-          .replace(' - - ', ' - ');
+        nowPlayingSong.schedule = cleanSchedule(scheduleData.firstChild?.data);
 
-        response.isArtistBlock =
-          response.schedule.indexOf("The Artists Block") !== -1;
+        nowPlayingSong.isArtistBlock =
+          nowPlayingSong.schedule.indexOf("The Artists Block") !== -1;
 
-        response.isWeeklyCountdown =
-          response.schedule.indexOf("Weekly Top Ten Countdown") !== -1;
+        nowPlayingSong.isWeeklyCountdown =
+          nowPlayingSong.schedule.indexOf("Weekly Top Ten Countdown") !== -1;
 
-        response.themeParkAndLand = getSongInfoByImage($, 'themepark-land');
-        response.attractionAndSong = getSongInfoByImage($, 'attraction-song');
-        response.year = Number(getSongInfoByImage($, 'year'));
+        // User is authenticated and passed a valid auth header
+        if ($.html().indexOf('Please login to use this feature') === -1) {
+          const songInfo = $(`table[bgcolor="#393939"]`) as any;
 
-        const uabOMaticString = 'UAB-O-MATIC ACTIVE: ';
-        const requestor = getSongInfoByImage($, 'requested-by');
-
-        if (requestor.indexOf(uabOMaticString) === -1) {
-          response.requestor = requestor;
-        } else {
-          response.isUabYourWayShow = true;
-          response.uabYourWayUser = requestor.replace(uabOMaticString, '').trim();
+          nowPlayingSong.isFavorite = songInfo.html().indexOf("checkmark.png") !== -1;
         }
 
-        response.composer = getSongInfoByImage($, 'composer');
-        response.plays = Number(getSongInfoByImage($, 'num-plays'));
-        response.requests = Number(getSongInfoByImage($, 'num-requests'));
+        nowPlayingSong.themeParkAndLand = getSongInfoByImage($, 'themepark-land');
+        nowPlayingSong.attractionAndSong = getSongInfoByImage($, 'attraction-song');
+        nowPlayingSong.year = Number(getSongInfoByImage($, 'year'));
+
+        const uabOMaticString = 'UAB-O-MATIC ACTIVE: ';
+        const requestor = getSongInfoByImage($, 'requested-by', false);
+
+        if (requestor.indexOf(uabOMaticString) === -1) {
+          nowPlayingSong.requestor = requestor;
+        } else {
+          nowPlayingSong.isUabYourWayShow = true;
+          nowPlayingSong.schedule = nowPlayingSong.schedule.replace(':', '');
+          nowPlayingSong.uabYourWayUser = requestor.replace(uabOMaticString, '').trim();
+        }
+
+        nowPlayingSong.composer = getSongInfoByImage($, 'composer');
+        nowPlayingSong.plays = Number(getSongInfoByImage($, 'num-plays'));
+        nowPlayingSong.requests = Number(getSongInfoByImage($, 'num-requests'));
 
         const firstImage = $(`img[width="200"]`)[0] as any;
         const imageUrl = encodeURIComponent(firstImage.attribs.src.trim().replace('pictures/', ''));
@@ -112,13 +127,13 @@ export const getNowPlayingSong = async (): Promise<NowPlayingSong> => {
         const finalImageUrl = `${Constants.FINAL_IMAGE_URL}${uabImageUrl}`;
         const blurredImageUrl = `${Constants.BLURRED_IMAGE_URL}${uabImageUrl}`;
 
-        response.images = {
+        nowPlayingSong.images = {
           uabUrl: uabImageUrl,
           url: finalImageUrl,
           blurredUrl: blurredImageUrl
         };
 
-        response.upNext = $(`font[color="#A5B7C9"]`)
+        nowPlayingSong.upNext = $(`font[color="#A5B7C9"]`)
           .first()
           .children()
           .first()
@@ -126,12 +141,13 @@ export const getNowPlayingSong = async (): Promise<NowPlayingSong> => {
           .split('<br><br>')
           .map((song: string) => {
             const songHtml = cheerio.load(song.trim()) as any;
+            const songHtmlText = songHtml.text();
 
-            return cleanse(songHtml.text());
+            return cleanse(songHtmlText, false);
           })
           .filter(String);
 
-        return resolve(response);
+        return resolve(nowPlayingSong);
       }
       );
   });

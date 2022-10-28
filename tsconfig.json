@@ -30,8 +30,7 @@
     "jsx": "preserve"
   },
   "include": [
-    "pages/**/*",
-    "index.ts"
+    "api/**/*"
   ],
   "exclude": [
     "node_modules"
