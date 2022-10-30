@@ -12,6 +12,7 @@ export class NowPlayingSong {
   composer: string = '';
   images: Images;
   isArtistBlock: boolean = false;
+  isFavorite: boolean = false;
   isUabYourWayShow: boolean = false;
   isWeeklyCountdown: boolean = false;
   playback: Playback;

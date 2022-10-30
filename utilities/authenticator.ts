@@ -1,20 +1,33 @@
+import axios from 'axios';
+import { wrapper } from 'axios-cookiejar-support';
+import { CookieJar } from 'tough-cookie';
+
+// import db from '../models/db/index';
+import querystring from 'querystring';
+
+// db.sequelize.sync();
+// const PushTokens = db.PushTokens;
+
 export const login = async (username: string, password: string): Promise<string> => {
-  const loginPostData = `username=${username}&password=${password}&login=Login&autologin=checked`;
+  const loginPostData = {
+    username,
+    password,
+    login: 'Login',
+    autologin: 'checked'
+  };
+
+  const jar = new CookieJar();
+  const client = wrapper(axios.create({ jar }));
 
   return new Promise<string>(function (resolve, reject) {
-    fetch(`http://uabmagic.com/phpBB2/login.php`,
-      {
-        method: `POST`,
-        redirect: `manual`,
-        body: loginPostData,
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        }
-      }
+    client.post(
+      'http://uabmagic.com/phpBB2/login.php',
+      querystring.stringify(loginPostData)
     )
-      .then((res: any) => {
-        const raw = res.headers.raw()[`set-cookie`];
-        return resolve([raw[2], raw[3]].join(`;`));
+      .then(async ({ config }) => {
+        const cookies = await config.jar.getCookies('http://uabmagic.com/');
+
+        return resolve([cookies[0], cookies[1]].join(';'));
       });
   });
 };
@@ -48,4 +61,31 @@ export const getUserIdAndSidFromHeader = (authHeader: string): any => {
   const sid = authHeaderParts[1];
 
   return { userId, sid };
+};
+
+export const updatePushToken = async (username: string, token: string): Promise<any> => {
+  // let success = true;
+
+  // try {
+  //   const query = { where: { username } };
+
+  //   let pushTokenModel = await PushTokens.findOne(query);
+
+  //   if (pushTokenModel === null) {
+  //     await PushTokens.create({
+  //       username,
+  //       token
+  //     });
+  //   } else {
+  //     await PushTokens.update({
+  //       token,
+  //     }, query);
+  //   }
+  // } catch (err) {
+  //   console.log(err);
+
+  //   success = false;
+  // }
+
+  // return { success };
 };
