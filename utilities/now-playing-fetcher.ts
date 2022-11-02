@@ -25,17 +25,15 @@ export const getNowPlayingSong = async (cookies: string = ''): Promise<NowPlayin
   const headers = cookies.length === 0 ? {}
     : {
       headers: {
-        cookie: buildCookieFromAuthHeader(cookies)
+        Cookie: buildCookieFromAuthHeader(cookies)
       }
     };
 
   return new Promise<NowPlayingSong>(function (resolve, reject) {
     axios.get(`http://uabmagic.com/UABpages/playing.php`, headers)
-      // .then(res => res.text())
       .then((response) => {
         const $ = cheerio.load(response.data);
 
-        // console.log($.html());
         const nowPlayingSong = new NowPlayingSong();
 
         let songId = 0;

@@ -9,7 +9,7 @@ export const getSong = async (songId: Number, cookies: string, isAuthed: boolean
     axios.get(`http://uabmagic.com/UABpages/songinfo.php?songID=${songId}`,
       {
         headers: {
-          cookie: cookies
+          Cookie: cookies
         }
       })
       .then(async (response) => {

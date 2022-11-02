@@ -24,7 +24,7 @@ export const request = async (songId: number, cookies: string): Promise<any> => 
     axios.get(`http://uabmagic.com/UABpages/req.php?songID=${songId}`,
       {
         headers: {
-          cookie: cookies
+          Cookie: cookies
         }
       }
     )

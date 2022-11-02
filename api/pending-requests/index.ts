@@ -1,6 +1,7 @@
 import axios from 'axios';
 import * as cheerio from 'cheerio';
 import { VercelRequest, VercelResponse } from '@vercel/node';
+import querystring from 'querystring';
 
 import { buildCookieFromAuthHeader, getUserIdAndSidFromHeader } from '../../utilities/authenticator';
 import { getSong } from '../../utilities/song-fetcher';
@@ -80,20 +81,20 @@ async function buildRequestList(inputs: cheerio.Cheerio<cheerio.Element>, cookie
 const deletePendingRequest = async (userId: Number, username: string,
   requestId: Number, songId: Number, cookies: string): Promise<any> => {
   return new Promise<any>(function (resolve, reject) {
-    const formData = `delete_${songId}=${requestId}` +
-      `&idusername=${username}` +
-      `&iduserid=${userId}`;
+    let formData: any = {
+      idusername: username,
+      iduserid: userId,
+      [`delete_${songId}`]: requestId
+    };
 
-    axios.post('http://uabmagic.com/UABpages/do-pending-requests.php',
+    axios.post(
+      'http://uabmagic.com/UABpages/do-pending-requests.php',
+      querystring.stringify(formData),
       {
-        body: formData,
-        method: 'POST',
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          cookie: cookies
+          Cookie: cookies
         }
-      }
-    )
+      })
       .then(async (result) => {
         const success = result.data.indexOf('Deleting') !== -1;
 

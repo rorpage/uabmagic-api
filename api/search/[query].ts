@@ -25,7 +25,7 @@ export const search = async (query: string, cookies: string): Promise<any> => {
     axios.get(`http://uabmagic.com/UABpages/playlist.php?match=1&limit=1000&search=${query}`,
       {
         headers: {
-          cookie: cookies
+          Cookie: cookies
         }
       }
     )
