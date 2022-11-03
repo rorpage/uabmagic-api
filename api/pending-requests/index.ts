@@ -35,7 +35,7 @@ const getPendingRequests = async (cookies: string): Promise<any> => {
     fetch('http://uabmagic.com/UABpages/user_pending.php',
       {
         headers: {
-          Cookie: cookies
+          cookie: cookies
         }
       }
     )
@@ -94,7 +94,7 @@ const deletePendingRequest = async (userId: Number, username: string,
       {
         body: params,
         headers: {
-          Cookie: cookies
+          cookie: cookies
         },
         method: 'POST'
       })

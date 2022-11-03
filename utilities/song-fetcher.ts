@@ -10,7 +10,7 @@ export const getSong = async (songId: Number, cookies: string, isAuthed: boolean
     fetch(`http://uabmagic.com/UABpages/songinfo.php?songID=${songId}`,
       {
         headers: {
-          Cookie: cookies
+          cookie: cookies
         }
       })
       .then(res => res.text())

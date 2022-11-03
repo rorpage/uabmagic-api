@@ -46,7 +46,7 @@ export const getFavorites = async (cookies: string): Promise<any> => {
     fetch('http://uabmagic.com/UABpages/view_favorites.php?limit=200',
       {
         headers: {
-          Cookie: cookies
+          cookie: cookies
         }
       }
     )
@@ -120,7 +120,7 @@ const processFavorite = async (action: string, songId: Number, cookies: string):
       {
         body: params,
         headers: {
-          Cookie: cookies
+          cookie: cookies
         },
         method: 'POST'
       }

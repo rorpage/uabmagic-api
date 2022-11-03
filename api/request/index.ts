@@ -25,7 +25,7 @@ export const request = async (songId: number, cookies: string): Promise<any> => 
     fetch(`http://uabmagic.com/UABpages/req.php?songID=${songId}`,
       {
         headers: {
-          Cookie: cookies
+          cookie: cookies
         }
       }
     )

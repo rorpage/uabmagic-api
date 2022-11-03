@@ -26,7 +26,7 @@ export const search = async (query: string, cookies: string): Promise<any> => {
     fetch(`http://uabmagic.com/UABpages/playlist.php?match=1&limit=1000&search=${query}`,
       {
         headers: {
-          Cookie: cookies
+          cookie: cookies
         }
       }
     )
