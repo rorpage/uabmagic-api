@@ -1,7 +1,6 @@
-import axios from 'axios';
 import * as cheerio from 'cheerio';
+import fetch from 'node-fetch';
 import { VercelRequest, VercelResponse } from '@vercel/node';
-import querystring from 'querystring';
 
 import { buildCookieFromAuthHeader, getUserIdAndSidFromHeader } from '../../utilities/authenticator';
 import { getSong } from '../../utilities/song-fetcher';
@@ -33,15 +32,16 @@ export default async (vercelRequest: VercelRequest, vercelResponse: VercelRespon
 
 const getPendingRequests = async (cookies: string): Promise<any> => {
   return new Promise<any>(function (resolve, reject) {
-    axios.get('http://uabmagic.com/UABpages/user_pending.php',
+    fetch('http://uabmagic.com/UABpages/user_pending.php',
       {
         headers: {
           Cookie: cookies
         }
       }
     )
+      .then(res => res.text())
       .then(async (response) => {
-        const $ = cheerio.load(response.data);
+        const $ = cheerio.load(response);
 
         const inputs = $(`input[type="checkbox"]`);
 
@@ -81,22 +81,26 @@ async function buildRequestList(inputs: cheerio.Cheerio<cheerio.Element>, cookie
 const deletePendingRequest = async (userId: Number, username: string,
   requestId: Number, songId: Number, cookies: string): Promise<any> => {
   return new Promise<any>(function (resolve, reject) {
-    let formData: any = {
-      idusername: username,
-      iduserid: userId,
-      [`delete_${songId}`]: requestId
-    };
+    const params = new URLSearchParams(
+      [
+        ['idusername', username],
+        ['iduserid', userId.toString()],
+        [`delete_${songId}`, requestId.toString()]
+      ]
+    );
 
-    axios.post(
+    fetch(
       'http://uabmagic.com/UABpages/do-pending-requests.php',
-      querystring.stringify(formData),
       {
+        body: params,
         headers: {
           Cookie: cookies
-        }
+        },
+        method: 'POST'
       })
+      .then(res => res.text())
       .then(async (result) => {
-        const success = result.data.indexOf('Deleting') !== -1;
+        const success = result.indexOf('Deleting') !== -1;
 
         const pendingRequests = await getPendingRequests(cookies);
 

@@ -1,9 +1,10 @@
-import axios from 'axios';
 import * as cheerio from 'cheerio';
+import fetch from 'node-fetch';
+import { VercelRequest, VercelResponse } from '@vercel/node';
+
 import { cleanse } from '../../utilities/string-cleaner';
 import { Constants } from '../../utilities/constants';
 import { login } from '../../utilities/authenticator';
-import { VercelRequest, VercelResponse } from '@vercel/node';
 
 export default async (vercelRequest: VercelRequest, vercelResponse: VercelResponse) => {
   const query = vercelRequest.query.query as string;
@@ -22,15 +23,16 @@ export const search = async (query: string, cookies: string): Promise<any> => {
   query = query.replace("'", "''");
 
   return new Promise<any>(function (resolve, reject) {
-    axios.get(`http://uabmagic.com/UABpages/playlist.php?match=1&limit=1000&search=${query}`,
+    fetch(`http://uabmagic.com/UABpages/playlist.php?match=1&limit=1000&search=${query}`,
       {
         headers: {
           Cookie: cookies
         }
       }
     )
+      .then(res => res.text())
       .then((response) => {
-        const $ = cheerio.load(response.data);
+        const $ = cheerio.load(response);
 
         const playlist = $(`font:contains("Playlist results")`)
           .closest(`table`)

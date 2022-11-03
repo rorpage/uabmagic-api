@@ -1,33 +1,28 @@
-import axios from 'axios';
-import { wrapper } from 'axios-cookiejar-support';
-import { CookieJar } from 'tough-cookie';
-
-// import db from '../models/db/index';
-import querystring from 'querystring';
+import fetch from 'node-fetch';
 
 // db.sequelize.sync();
 // const PushTokens = db.PushTokens;
 
 export const login = async (username: string, password: string): Promise<string> => {
-  const loginPostData = {
-    username,
-    password,
-    login: 'Login',
-    autologin: 'checked'
-  };
+  const params = new URLSearchParams();
 
-  const jar = new CookieJar();
-  const client = wrapper(axios.create({ jar }));
+  params.append('username', username);
+  params.append('password', password);
+  params.append('login', 'Login');
+  params.append('autologin', 'checked');
 
   return new Promise<string>(function (resolve, reject) {
-    client.post(
+    fetch(
       'http://uabmagic.com/phpBB2/login.php',
-      querystring.stringify(loginPostData)
+      {
+        body: params,
+        method: 'POST',
+        redirect: 'manual'
+      }
     )
-      .then(async ({ config }) => {
-        const cookies = await config.jar.getCookies('http://uabmagic.com/');
-
-        return resolve([cookies[0], cookies[1]].join(';'));
+      .then((res: any) => {
+        const raw = res.headers.raw()[`set-cookie`];
+        return resolve([raw[2], raw[3]].join(`;`));
       });
   });
 };

@@ -1,7 +1,6 @@
-import axios from 'axios';
 import { buildCookieFromAuthHeader } from '../../utilities/authenticator';
 import * as cheerio from 'cheerio';
-import querystring from 'querystring';
+import fetch from 'node-fetch';
 import { VercelRequest, VercelResponse } from '@vercel/node';
 
 import { cleanse } from '../../utilities/string-cleaner';
@@ -44,16 +43,17 @@ export const processFavorites =
 
 export const getFavorites = async (cookies: string): Promise<any> => {
   return new Promise<any>(function (resolve, reject) {
-    axios.get('http://uabmagic.com/UABpages/view_favorites.php?limit=200',
+    fetch('http://uabmagic.com/UABpages/view_favorites.php?limit=200',
       {
         headers: {
           Cookie: cookies
         }
       }
     )
-      .then(async (response) => {
+      .then(res => res.text())
+      .then(async (response: string) => {
 
-        const $ = cheerio.load(response.data);
+        const $ = cheerio.load(response);
 
         const results: any[] = [];
 
@@ -113,21 +113,21 @@ const processFavorite = async (action: string, songId: Number, cookies: string):
   return new Promise<any>(function (resolve, reject) {
     const key = action === 'add' ? `add_${songId}` : `delete__${songId}`;
 
-    const formData: any = {
-      [key]: songId
-    };
+    const params = new URLSearchParams([[key, songId.toString()]]);
 
-    axios.post(
+    fetch(
       'http://uabmagic.com/UABpages/do-favorites.php',
-      querystring.stringify(formData),
       {
+        body: params,
         headers: {
           Cookie: cookies
-        }
+        },
+        method: 'POST'
       }
     )
-      .then(async (response) => {
-        const success = response.data.indexOf('Favorites updated') !== -1;
+      .then(res => res.text())
+      .then(async (response: string) => {
+        const success = response.indexOf('Favorites updated') !== -1;
 
         const favorites = await getFavorites(cookies);
 

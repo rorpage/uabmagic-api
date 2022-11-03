@@ -1,23 +1,25 @@
-import axios from 'axios';
 import * as cheerio from 'cheerio';
 import { cleanse } from './string-cleaner';
 import { Constants } from './constants';
+import fetch from 'node-fetch';
+
 import { getFavorites } from '../api/favorites';
 
 export const getSong = async (songId: Number, cookies: string, isAuthed: boolean = false): Promise<any> => {
   return new Promise<any>(function (resolve, reject) {
-    axios.get(`http://uabmagic.com/UABpages/songinfo.php?songID=${songId}`,
+    fetch(`http://uabmagic.com/UABpages/songinfo.php?songID=${songId}`,
       {
         headers: {
           Cookie: cookies
         }
       })
+      .then(res => res.text())
       .then(async (response) => {
-        const $ = cheerio.load(response.data);
+        const $ = cheerio.load(response);
 
         const song: any = { id: Number(songId), playback: {} };
 
-        const canRequest = response.data.indexOf('request_icon_lightblue.gif') !== -1;
+        const canRequest = response.indexOf('request_icon_lightblue.gif') !== -1;
 
         song.canRequest = canRequest;
         const offset = canRequest ? 1 : 0;

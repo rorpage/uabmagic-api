@@ -1,7 +1,8 @@
-import axios from 'axios';
 import * as cheerio from 'cheerio';
 import { cleanse, cleanSchedule } from './string-cleaner';
 import { Constants } from './constants';
+import fetch from 'node-fetch';
+
 import { NowPlayingSong } from '../models/now-playing-song';
 import { buildCookieFromAuthHeader } from '../utilities/authenticator';
 
@@ -30,9 +31,10 @@ export const getNowPlayingSong = async (cookies: string = ''): Promise<NowPlayin
     };
 
   return new Promise<NowPlayingSong>(function (resolve, reject) {
-    axios.get(`http://uabmagic.com/UABpages/playing.php`, headers)
+    fetch(`http://uabmagic.com/UABpages/playing.php`, headers)
+      .then(res => res.text())
       .then((response) => {
-        const $ = cheerio.load(response.data);
+        const $ = cheerio.load(response);
 
         const nowPlayingSong = new NowPlayingSong();
 
