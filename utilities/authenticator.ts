@@ -4,12 +4,14 @@ import fetch from 'node-fetch';
 // const PushTokens = db.PushTokens;
 
 export const login = async (username: string, password: string): Promise<string> => {
-  const params = new URLSearchParams();
-
-  params.append('username', username);
-  params.append('password', password);
-  params.append('login', 'Login');
-  params.append('autologin', 'checked');
+  const params = new URLSearchParams(
+    [
+      ['username', username],
+      ['password', password],
+      ['login', 'Login'],
+      ['autologin', 'checked']
+    ]
+  );
 
   return new Promise<string>(function (resolve, reject) {
     fetch(
@@ -22,6 +24,7 @@ export const login = async (username: string, password: string): Promise<string>
     )
       .then((res: any) => {
         const raw = res.headers.raw()[`set-cookie`];
+
         return resolve([raw[2], raw[3]].join(`;`));
       });
   });
