@@ -6,7 +6,7 @@ import { cleanse } from '../../../utilities/string-cleaner';
 import { Constants } from '../../../utilities/constants';
 import { login } from '../../../utilities/authenticator';
 
-export default async (vercelRequest: VercelRequest, vercelResponse: VercelResponse) => {
+const searchEndpoint = async (vercelRequest: VercelRequest, vercelResponse: VercelResponse) => {
   const query = vercelRequest.query.query as string;
 
   const username = process.env.SEARCH_USERNAME || ``;
@@ -64,7 +64,8 @@ export const search = async (query: string, cookies: string): Promise<any> => {
           const href = $(aTag).attr(`href`);
 
           if (href !== undefined) {
-            song.id = Number(href.match(/-?\d+/g)[0]);
+            const songId = href.match(/-?\d+/g) ?? '';
+            song.id = Number(songId[0]);
           }
 
           if (song.id === 0) return;
@@ -133,3 +134,5 @@ export const calculateRating = (ratingImage: string): number => {
 
   return 0;
 };
+
+export default searchEndpoint;
