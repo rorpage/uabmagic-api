@@ -28,6 +28,7 @@ export const request = async (songId: number, cookies: CookieJar): Promise<any> 
     })
       .then(response => {
         const body = response.body;
+        console.log(body);
 
         const $ = cheerio.load(body);
         const requestIDInputValue = $(`input[name="requestID"]`).attr(`value`);
