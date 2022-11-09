@@ -7,7 +7,7 @@ export class NowPlayingSong {
     this.playback = new Playback();
   }
 
-  id: number;
+  id: number | undefined;
   attractionAndSong: string = '';
   composer: string = '';
   images: Images;
@@ -16,12 +16,12 @@ export class NowPlayingSong {
   isUabYourWayShow: boolean = false;
   isWeeklyCountdown: boolean = false;
   playback: Playback;
-  plays: number;
+  plays: number | undefined;
   requestor: string = '';
-  requests: number;
+  requests: number | undefined;
   schedule: string = '';
   themeParkAndLand: string = '';
   uabYourWayUser: string = '';
-  upNext: string[];
-  year: number;
+  upNext: string[] | undefined;
+  year: number | undefined;
 }

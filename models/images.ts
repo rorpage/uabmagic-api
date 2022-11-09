@@ -1,5 +1,5 @@
 export class Images {
-  uabUrl: string;
-  url: string;
-  blurredUrl: string;
+  uabUrl: string | undefined;
+  url: string | undefined;
+  blurredUrl: string | undefined;
 }

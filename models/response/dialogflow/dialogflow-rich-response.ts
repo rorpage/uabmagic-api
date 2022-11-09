@@ -1,3 +1,3 @@
 export class DialogFlowRichResponse {
-    public items: any[];
+  public items: any[] | undefined;
 }

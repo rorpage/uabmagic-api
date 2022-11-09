@@ -1,8 +1,8 @@
 export class Playback {
-  duration: number;
-  durationDisplay: string;
-  timeElapsed: number;
-  timeElapsedDisplay: string;
-  timeLeft: number;
-  timeLeftDisplay: string;
+  duration: number | undefined;
+  durationDisplay: string | undefined;
+  timeElapsed: number | undefined;
+  timeElapsedDisplay: string | undefined;
+  timeLeft: number | undefined;
+  timeLeftDisplay: string | undefined;
 }
