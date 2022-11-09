@@ -25,7 +25,7 @@ export const login = async (username: string, password: string): Promise<string>
     )
       .then((res: any) => {
         const raw = res.headers.raw()[`set-cookie`];
-
+        console.log(raw);
         return resolve([raw[2], raw[3]].join(`;`));
       });
   });
