@@ -135,11 +135,11 @@ export const getNowPlayingSong = async (cookies: string = ''): Promise<NowPlayin
         };
 
         nowPlayingSong.upNext = $(`font[color="#A5B7C9"]`)
-          .first()
-          .children()
-          .first()
-          .html()
-          .split('<br><br>')
+          ?.first()
+          ?.children()
+          ?.first()
+          ?.html()
+          ?.split('<br><br>')
           .map((song: string) => {
             const songHtml = cheerio.load(song.trim()) as any;
             const songHtmlText = songHtml.text();
