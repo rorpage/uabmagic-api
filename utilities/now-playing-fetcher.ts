@@ -40,15 +40,16 @@ export const getNowPlayingSong = async (cookies: string = ''): Promise<NowPlayin
 
         let songId = 0;
         try {
-          const songIdMatch = $(`img[src="images/overall-rating.gif"]`).parent()
-            .siblings('td')
-            .children('b')
-            .children('font')
-            .children('a')
-            .attr('href')
-            .match(/-?\d+/g)[0];
+          const ratingParent = $(`img[src="images/overall-rating.gif"]`).parent();
+          const songIdMatch = ratingParent
+            ?.siblings('td')
+            ?.children('b')
+            ?.children('font')
+            ?.children('a')
+            ?.attr('href')
+            ?.match(/-?\d+/g) ?? '';
 
-          songId = Number(songIdMatch);
+          songId = Number(songIdMatch[0]);
         } catch (e) {
           console.log(e);
         }
