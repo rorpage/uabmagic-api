@@ -5,7 +5,7 @@ import { VercelRequest, VercelResponse } from '@vercel/node';
 
 import { buildCookieJar } from '../../../utilities/authenticator';
 
-export default async (vercelRequest: VercelRequest, vercelResponse: VercelResponse) => {
+const requestEndpoint = async (vercelRequest: VercelRequest, vercelResponse: VercelResponse) => {
   if (!vercelRequest.headers.authorization) {
     vercelResponse.status(401).send(`Unauthorized`);
 
@@ -28,7 +28,6 @@ export const request = async (songId: number, cookies: CookieJar): Promise<any> 
     })
       .then(response => {
         const body = response.body;
-        console.log(body);
 
         const $ = cheerio.load(body);
         const requestIDInputValue = $(`input[name="requestID"]`).attr(`value`);
@@ -62,3 +61,5 @@ export const request = async (songId: number, cookies: CookieJar): Promise<any> 
       });
   });
 };
+
+export default requestEndpoint;

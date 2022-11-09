@@ -1,7 +1,7 @@
 import { login } from '../../../utilities/authenticator';
 import { VercelRequest, VercelResponse } from '@vercel/node';
 
-export default async (vercelRequest: VercelRequest, vercelResponse: VercelResponse) => {
+const loginEndpoint = async (vercelRequest: VercelRequest, vercelResponse: VercelResponse) => {
   const { username, password } = vercelRequest.body;
 
   if (username === undefined || password === undefined) {
@@ -13,9 +13,12 @@ export default async (vercelRequest: VercelRequest, vercelResponse: VercelRespon
   const cookies = await login(username, password);
 
   const userIdCookiePart = decodeURIComponent(cookies.split(';')[0].replace(`uabmagicconsole_data=`, ``));
-  const userId = Number(userIdCookiePart.match(/-?\d+/g)[5]);
+  const cookieMatch = userIdCookiePart.match(/-?\d+/g) ?? '';
+  const userId = Number(cookieMatch[5]);
 
   const sid = decodeURIComponent(cookies.split(';')[4].replace(`uabmagicconsole_sid=`, ``));
 
   vercelResponse.json({ userId, sid });
 };
+
+export default loginEndpoint;
