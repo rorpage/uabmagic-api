@@ -1,3 +1,4 @@
+import { CookieJar } from 'tough-cookie';
 import fetch from 'node-fetch';
 
 // db.sequelize.sync();
@@ -50,6 +51,21 @@ export const buildCookie = (authInfo: any): string => {
   const sidCookie = `uabmagicconsole_sid=${authInfo.sid}`;
 
   return [consoleDataCookie, path, domain, sidCookie, path, domain].join(';');
+};
+
+export const buildCookieJar = async (authHeader: string): Promise<CookieJar> => {
+  const domain = 'http://uabmagic.com';
+
+  const authInfo = getUserIdAndSidFromHeader(authHeader);
+
+  const consoleDataCookie = `uabmagicconsole_data=a%3A2%3A%7Bs%3A11%3A%22autologinid%22%3Bs%3A0%3A%22%22%3Bs%3A6%3A%22userid%22%3Bs%3A4%3A%22${authInfo.userId}%22%3B%7D`;
+  const sidCookie = `uabmagicconsole_sid=${authInfo.sid}`;
+
+  const cookieJar = new CookieJar();
+  await cookieJar.setCookie(consoleDataCookie, domain);
+  await cookieJar.setCookie(sidCookie, domain);
+
+  return cookieJar;
 };
 
 export const getUserIdAndSidFromHeader = (authHeader: string): any => {

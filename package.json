@@ -26,6 +26,7 @@
     "@types/node-fetch": "^2.6.2",
     "@types/react": "^18.0.24",
     "@types/tedious": "^4.0.9",
+    "@types/tough-cookie": "^4.0.2",
     "@types/uuid": "^3.4.10",
     "@types/validator": "^13.7.9",
     "@vercel/node": "^1.12.1",
@@ -36,11 +37,13 @@
   },
   "dependencies": {
     "cheerio": "^1.0.0-rc.12",
+    "got": "^12.5.2",
     "node-fetch": "2.6.7",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "sequelize": "^6.25.3",
     "tedious": "^15.1.0",
-    "title-case": "^3.0.3"
+    "title-case": "^3.0.3",
+    "tough-cookie": "^4.1.2"
   }
 }

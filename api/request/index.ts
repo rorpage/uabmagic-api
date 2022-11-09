@@ -1,8 +1,9 @@
 import * as cheerio from 'cheerio';
-import fetch from 'node-fetch';
+import { CookieJar } from 'tough-cookie';
+import got from 'got';
 import { VercelRequest, VercelResponse } from '@vercel/node';
 
-import { buildCookieFromAuthHeader } from '../../utilities/authenticator';
+import { buildCookieJar } from '../../utilities/authenticator';
 
 export default async (vercelRequest: VercelRequest, vercelResponse: VercelResponse) => {
   if (!vercelRequest.headers.authorization) {
@@ -13,24 +14,20 @@ export default async (vercelRequest: VercelRequest, vercelResponse: VercelRespon
 
   const { songId } = vercelRequest.body;
 
-  const cookie = buildCookieFromAuthHeader(vercelRequest.headers.authorization);
+  const cookieJar = await buildCookieJar(vercelRequest.headers.authorization);
 
-  const requestResponse = await request(songId, cookie);
+  const requestResponse = await request(songId, cookieJar);
 
   vercelResponse.json(requestResponse);
 };
 
-export const request = async (songId: number, cookies: string): Promise<any> => {
+export const request = async (songId: number, cookies: CookieJar): Promise<any> => {
   return new Promise<any>(function (resolve, reject) {
-    fetch(`http://uabmagic.com/UABpages/req.php?songID=${songId}`,
-      {
-        headers: {
-          cookie: cookies
-        }
-      }
-    )
-      .then(res => res.text())
-      .then(async (body: string) => {
+    got(`http://uabmagic.com/UABpages/req.php?songID=${songId}`, {
+      cookieJar: cookies
+    })
+      .then(response => {
+        const body = response.body;
 
         const $ = cheerio.load(body);
         const requestIDInputValue = $(`input[name="requestID"]`).attr(`value`);
