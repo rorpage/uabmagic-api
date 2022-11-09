@@ -1,7 +1,7 @@
 import { VercelRequest, VercelResponse } from '@vercel/node';
 
-import { login } from '../../utilities/authenticator';
-import { getSong } from '../../utilities/song-fetcher';
+import { login } from '../../../utilities/authenticator';
+import { getSong } from '../../../utilities/song-fetcher';
 
 export default async (vercelRequest: VercelRequest, vercelResponse: VercelResponse) => {
   const { songIds } = vercelRequest.body;

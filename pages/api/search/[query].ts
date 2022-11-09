@@ -2,9 +2,9 @@ import * as cheerio from 'cheerio';
 import fetch from 'node-fetch';
 import { VercelRequest, VercelResponse } from '@vercel/node';
 
-import { cleanse } from '../../utilities/string-cleaner';
-import { Constants } from '../../utilities/constants';
-import { login } from '../../utilities/authenticator';
+import { cleanse } from '../../../utilities/string-cleaner';
+import { Constants } from '../../../utilities/constants';
+import { login } from '../../../utilities/authenticator';
 
 export default async (vercelRequest: VercelRequest, vercelResponse: VercelResponse) => {
   const query = vercelRequest.query.query as string;

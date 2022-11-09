@@ -1,10 +1,10 @@
-import { buildCookieFromAuthHeader } from '../../utilities/authenticator';
+import { buildCookieFromAuthHeader } from '../../../utilities/authenticator';
 import * as cheerio from 'cheerio';
 import fetch from 'node-fetch';
 import { VercelRequest, VercelResponse } from '@vercel/node';
 
-import { cleanse } from '../../utilities/string-cleaner';
-import { Constants } from '../../utilities/constants';
+import { cleanse } from '../../../utilities/string-cleaner';
+import { Constants } from '../../../utilities/constants';
 
 export default async (vercelRequest: VercelRequest, vercelResponse: VercelResponse) => {
   if (!vercelRequest.headers.authorization) {

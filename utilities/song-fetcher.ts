@@ -3,7 +3,7 @@ import { cleanse } from './string-cleaner';
 import { Constants } from './constants';
 import fetch from 'node-fetch';
 
-import { getFavorites } from '../api/favorites';
+import { getFavorites } from '../pages/api/favorites';
 
 export const getSong = async (songId: Number, cookies: string, isAuthed: boolean = false): Promise<any> => {
   return new Promise<any>(function (resolve, reject) {

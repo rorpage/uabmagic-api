@@ -1,7 +1,7 @@
 import { VercelRequest, VercelResponse } from '@vercel/node';
 
-import { buildCookieFromAuthHeader, login } from '../../utilities/authenticator';
-import { getSong } from '../../utilities/song-fetcher';
+import { buildCookieFromAuthHeader, login } from '../../../utilities/authenticator';
+import { getSong } from '../../../utilities/song-fetcher';
 
 export default async (vercelRequest: VercelRequest, vercelResponse: VercelResponse) => {
   const songId = vercelRequest.query.id as string;

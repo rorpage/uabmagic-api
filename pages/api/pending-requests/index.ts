@@ -2,8 +2,8 @@ import * as cheerio from 'cheerio';
 import fetch from 'node-fetch';
 import { VercelRequest, VercelResponse } from '@vercel/node';
 
-import { buildCookieFromAuthHeader, getUserIdAndSidFromHeader } from '../../utilities/authenticator';
-import { getSong } from '../../utilities/song-fetcher';
+import { buildCookieFromAuthHeader, getUserIdAndSidFromHeader } from '../../../utilities/authenticator';
+import { getSong } from '../../../utilities/song-fetcher';
 
 export default async (vercelRequest: VercelRequest, vercelResponse: VercelResponse) => {
   if (!vercelRequest.headers.authorization) {

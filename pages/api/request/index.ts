@@ -3,7 +3,7 @@ import { CookieJar } from 'tough-cookie';
 import got from 'got';
 import { VercelRequest, VercelResponse } from '@vercel/node';
 
-import { buildCookieJar } from '../../utilities/authenticator';
+import { buildCookieJar } from '../../../utilities/authenticator';
 
 export default async (vercelRequest: VercelRequest, vercelResponse: VercelResponse) => {
   if (!vercelRequest.headers.authorization) {

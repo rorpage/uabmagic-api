@@ -1,4 +1,4 @@
-import { updatePushToken } from '../../utilities/authenticator';
+import { updatePushToken } from '../../../utilities/authenticator';
 import { VercelRequest, VercelResponse } from '@vercel/node';
 
 export default async (vercelRequest: VercelRequest, vercelResponse: VercelResponse) => {
