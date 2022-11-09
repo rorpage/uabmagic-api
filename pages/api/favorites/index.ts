@@ -6,7 +6,7 @@ import { VercelRequest, VercelResponse } from '@vercel/node';
 import { cleanse } from '../../../utilities/string-cleaner';
 import { Constants } from '../../../utilities/constants';
 
-export default async (vercelRequest: VercelRequest, vercelResponse: VercelResponse) => {
+const favoritesEndpoint = async (vercelRequest: VercelRequest, vercelResponse: VercelResponse) => {
   if (!vercelRequest.headers.authorization) {
     vercelResponse.status(401).send(`Unauthorized`);
 
@@ -66,14 +66,14 @@ export const getFavorites = async (cookies: string): Promise<any> => {
 
           let song: any = {};
 
-          song.canRequest = $(trElement).html().indexOf('request_icon_lightblue.gif') !== -1;
+          song.canRequest = $(trElement).html()?.indexOf('request_icon_lightblue.gif') !== -1;
 
           $(trElement).find(`td`)
             .each((index: number, element: any) => {
               if (index === 1) {
-                const correctedImage = $(element).html().replace('\n', '');
-                const url = $(correctedImage).attr('src').trim().replace('pictures/', '');
-                const image = encodeURIComponent(url);
+                const correctedImage = $(element).html()?.replace('\n', '');
+                const url = $(correctedImage).attr('src')?.trim().replace('pictures/', '');
+                const image = encodeURIComponent(url ?? '');
 
                 const uabImageUrl = `${Constants.UAB_IMAGE_URL}/${image}`;
                 const imageUrl = `${Constants.FINAL_IMAGE_URL}${uabImageUrl}`
@@ -135,3 +135,5 @@ const processFavorite = async (action: string, songId: Number, cookies: string):
       });
   });
 };
+
+export default favoritesEndpoint;
