@@ -125,8 +125,16 @@ export const getNowPlayingSong = async (cookies: string = ''): Promise<NowPlayin
         const imageUrl = encodeURIComponent(firstImage.attribs.src.trim().replace('pictures/', ''));
 
         const uabImageUrl = `${Constants.UAB_IMAGE_URL}/${imageUrl}`;
-        const finalImageUrl = `${Constants.FINAL_IMAGE_URL}${uabImageUrl}`;
-        const blurredImageUrl = `${Constants.BLURRED_IMAGE_URL}${uabImageUrl}`;
+        const finalImageUrl = `${uabImageUrl}`
+          .replace('.gif', '.png')
+          .replace('.GIF', '.png')
+          .replace('.jpg', '.png')
+          .replace('.JPG', '.png');
+        const blurredImageUrl = `${uabImageUrl}`
+          .replace('.gif', '_blurred.png')
+          .replace('.GIF', '_blurred.png')
+          .replace('.jpg', '_blurred.png')
+          .replace('.JPG', '_blurred.png');
 
         nowPlayingSong.images = {
           uabUrl: uabImageUrl,

@@ -71,8 +71,16 @@ export const getSong = async (songId: Number, cookies: string, isAuthed: boolean
         const uabImageUrl = `${Constants.UAB_IMAGE_URL}/${imageUrl}`;
 
         song.uabImageUrl = uabImageUrl;
-        song.imageUrl = `${Constants.FINAL_IMAGE_URL}${uabImageUrl}`;
-        song.blurredImageUrl = `${Constants.BLURRED_IMAGE_URL}${uabImageUrl}`;
+        song.imageUrl = `${uabImageUrl}`
+          .replace('.gif', '.png')
+          .replace('.GIF', '.png')
+          .replace('.jpg', '.png')
+          .replace('.JPG', '.png');
+        song.blurredImageUrl = `${uabImageUrl}`
+          .replace('.gif', '_blurred.png')
+          .replace('.GIF', '_blurred.png')
+          .replace('.jpg', '_blurred.png')
+          .replace('.JPG', '_blurred.png');
 
         song.images = {
           uabUrl: song.uabImageUrl,

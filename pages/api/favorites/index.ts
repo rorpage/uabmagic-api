@@ -76,8 +76,16 @@ export const getFavorites = async (cookies: string): Promise<any> => {
                 const image = encodeURIComponent(url ?? '');
 
                 const uabImageUrl = `${Constants.UAB_IMAGE_URL}/${image}`;
-                const imageUrl = `${Constants.FINAL_IMAGE_URL}${uabImageUrl}`
-                const blurredImageUrl = `${Constants.BLURRED_IMAGE_URL}${uabImageUrl}`;
+                const imageUrl = `${uabImageUrl}`
+                  .replace('.gif', '.png')
+                  .replace('.GIF', '.png')
+                  .replace('.jpg', '.png')
+                  .replace('.JPG', '.png');
+                const blurredImageUrl = `${uabImageUrl}`
+                  .replace('.gif', '_blurred.png')
+                  .replace('.GIF', '_blurred.png')
+                  .replace('.jpg', '_blurred.png')
+                  .replace('.JPG', '_blurred.png');
 
                 song.images = {
                   uabUrl: uabImageUrl,
