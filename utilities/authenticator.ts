@@ -1,8 +1,6 @@
 import { CookieJar } from 'tough-cookie';
 import fetch from 'node-fetch';
-
-// db.sequelize.sync();
-// const PushTokens = db.PushTokens;
+import supbase from '../lib/supabaseClient';
 
 export const login = async (username: string, password: string): Promise<string> => {
   const params = new URLSearchParams(
@@ -77,29 +75,16 @@ export const getUserIdAndSidFromHeader = (authHeader: string): any => {
   return { userId, sid };
 };
 
-export const updatePushToken = async (username: string, token: string): Promise<any> => {
-  // let success = true;
+export const updatePushToken = async (username: string, userid: number, token: string): Promise<any> => {
+  const pushTokenTable = 'pushtokens';
 
-  // try {
-  //   const query = { where: { username } };
+  const { data } = await supbase.from(pushTokenTable).select().eq('username', username);
 
-  //   let pushTokenModel = await PushTokens.findOne(query);
+  if (!data) return;
 
-  //   if (pushTokenModel === null) {
-  //     await PushTokens.create({
-  //       username,
-  //       token
-  //     });
-  //   } else {
-  //     await PushTokens.update({
-  //       token,
-  //     }, query);
-  //   }
-  // } catch (err) {
-  //   console.log(err);
-
-  //   success = false;
-  // }
-
-  // return { success };
+  if (data.length === 0) {
+    await supbase.from(pushTokenTable).insert({ username, userid, token });
+  } else {
+    await supbase.from(pushTokenTable).update({ username, userid, token }).match({ username });
+  }
 };

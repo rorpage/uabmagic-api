@@ -3,7 +3,7 @@ import { VercelRequest, VercelResponse } from '@vercel/node';
 import { buildCookieFromAuthHeader, login } from '../../../utilities/authenticator';
 import { getSong } from '../../../utilities/song-fetcher';
 
-export default async (vercelRequest: VercelRequest, vercelResponse: VercelResponse) => {
+const songByIdEndpoint = async (vercelRequest: VercelRequest, vercelResponse: VercelResponse) => {
   const songId = vercelRequest.query.id as string;
 
   const authHeader = vercelRequest.headers.authorization || '';
@@ -25,3 +25,5 @@ export default async (vercelRequest: VercelRequest, vercelResponse: VercelRespon
 
   vercelResponse.json(song);
 };
+
+export default songByIdEndpoint;

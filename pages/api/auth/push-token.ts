@@ -1,14 +1,8 @@
 import { updatePushToken } from '../../../utilities/authenticator';
 import { VercelRequest, VercelResponse } from '@vercel/node';
 
-export default async (vercelRequest: VercelRequest, vercelResponse: VercelResponse) => {
-  const { username, token } = vercelRequest.body;
-
-  if (username === undefined || token === undefined) {
-    vercelResponse.status(400).send(`Username and token are required`);
-
-    return;
-  }
+const pushTokenEndpoint = async (vercelRequest: VercelRequest, vercelResponse: VercelResponse) => {
+  const { username, userid, token } = vercelRequest.body;
 
   if (vercelRequest.method !== 'POST') {
     vercelResponse.status(405).json({ error: 'Invalid method' });
@@ -16,11 +10,19 @@ export default async (vercelRequest: VercelRequest, vercelResponse: VercelRespon
     return;
   }
 
+  if (username === undefined || userid === undefined || token === undefined) {
+    vercelResponse.status(400).send(`username, userid, and token are required`);
+
+    return;
+  }
+
   try {
-    const response = await updatePushToken(username, token);
+    const response = await updatePushToken(username, userid, token);
 
     vercelResponse.status(200).json(response);
   } catch (error) {
     vercelResponse.status(500).json({ error });
   }
 };
+
+export default pushTokenEndpoint;
